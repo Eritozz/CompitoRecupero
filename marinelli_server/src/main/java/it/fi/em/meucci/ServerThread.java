@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,8 +22,9 @@ public class ServerThread extends Thread{
     }
 
 
-    public void comunica() throws Exception{
+    public void comunica(){
 
+        try{
         inDalClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
         outVersoIlClient = new DataOutputStream(client.getOutputStream());
         
@@ -32,14 +34,38 @@ public class ServerThread extends Thread{
             String stringaRicevuta = inDalClient.readLine();
             Messaggio messaggio = objectMapper.readValue(stringaRicevuta, Messaggio.class);     
 
-            if (messaggio.getListaPersone().size() == 0){                     
-                Messaggio mess = new Messaggio(ServerMain.listaPersone);
-                outVersoIlClient.writeBytes(objectMapper.writeValueAsString(mess) + "\n");
+            ArrayList <Persona> listaPers = new ArrayList<>();
 
-            }else{
+            if(messaggio.getListaPersone().size() != 0 && messaggio.getNazioneRichiesta() == null ){
+
+            
+            }
+            else if(messaggio.getNazioneRichiesta() != null && messaggio.getListaPersone().size() == 0){
+                for(int i = 0; i < listaPers.size(); i++){
+                    if(messaggio.getNazioneRichiesta() == listaPers.get(i).getNazioneDiResidenza()){
+                        System.out.println(listaPers.get(i));
+                    }
+                }
                 
-
+                
+    
+            }else if(messaggio.getNazioneRichiesta() == null && messaggio.getListaPersone().size() == 0){
+                
             }
         }
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        public void run(){
+
+            try {
+                this.comunica();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+    
+        }
     }
-}
+

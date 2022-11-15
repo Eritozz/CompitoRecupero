@@ -70,9 +70,8 @@ public class Client {
 
             
         ArrayList <Persona> listaPers = new ArrayList<>();
-        System.out.println("Scelta: ");
         
-        
+        listaPers.add(p);
         
     }catch(Exception e){
         System.out.println("Si e' verificato un errore. Riprovare.");
